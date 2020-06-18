@@ -1,49 +1,26 @@
-"""
-Image Transformation
-"""
-import time
-
-from config import Config as conf
-from utils import camel_case_to_str
+"""Images Transforms."""
+from processing import Processing
 
 
-class ImageTransform:
-    """
-    Abstract Image Transformation Class
-    """
+class ImageTransform(Processing):
+    """Abstract Image Transformation Class."""
 
-    def __init__(self, input_index=(-1,), args=None):
+    class InvalidNumberOfArgs(ValueError):
+        def __str__(self):
+            return "Invalid nubmmer of arguments given"
+
+    def __init__(self, input_index=(-1,)):
         """
-        Image Transformation Class Constructor
+        Image Transformation Class Constructor.
+
         :param input_index: <tuple> index where to take the inputs (default is (-1) for previous transformation)
-        :param args: <dict> args parameter to run the image transformation (default use conf.args)
+        :param args: <dict> args parameter to run the image transformation (default use Conf.args)
         """
-        self.__start = time.time()
+
+        super().__init__()
         self.input_index = input_index
-        self._args = conf.args.copy() if args is None else args.copy()
 
-    def run(self, *args):
-        self.__start = time.time()
-        self.info_start_run()
-        self.setup(*args)
-        r = self.execute(*args)
-        self.clean(*args)
-        self.info_end_run()
-        return r
-
-    def info_start_run(self):
-        self.__start = time.time()
-        conf.log.info("Executing {}".format(camel_case_to_str(self.__class__.__name__)))
-
-    def info_end_run(self):
-        conf.log.debug("{} Done in {} seconds".format(
-            camel_case_to_str(self.__class__.__name__), round(time.time() - self.__start, 2)))
-
-    def setup(self, *args):
-        pass
-
-    def execute(self, *args):
-        pass
-
-    def clean(self, *args):
-        pass
+    def run(self, *args, config=None):
+        if len(args) != len(self.input_index):
+            raise ImageTransform.InvalidNumberOfArgs()
+        return super().run(*args, config=config)

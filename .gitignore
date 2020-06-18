@@ -60,3 +60,12 @@ venv.bak/
 
 # IDE
 .idea
+*.kdev4
+
+# flake
+.flake8
+requirements_flake8.txt
+
+# Test
+requirements_dev.txt
+tests
